@@ -1282,3 +1282,42 @@ void authd_sigblock() {
     sigaddset(&sigset, SIGINT);
     pthread_sigmask(SIG_BLOCK, &sigset, NULL);
 }
+
+w_err_t w_auth_validate_groups(char *groups) {
+    int max_multigroups = 0;    
+    char *save_ptr = NULL;
+    const char delim[] = {MULTIGROUP_SEPARATOR,'\0'};
+    char path[PATH_MAX];
+  
+    char *group = strtok_r(groups, delim, &save_ptr);    
+
+    while( group != NULL ) {
+        DIR * dp;
+        char dir[PATH_MAX + 1] = {0};        
+
+        /* Check limit */
+        if(max_multigroups > MAX_GROUPS_PER_MULTIGROUP){
+            merror("Maximum multigroup reached: Limit is %d",MAX_GROUPS_PER_MULTIGROUP);                
+            return OS_INVALID;
+        }
+        /* Validate the group name */
+        int valid = 0;
+        if( 0 != w_validate_group_name(group) ){ 
+            merror("Invalid group name: %.255s... ,",group);                   
+            return OS_INVALID;
+        }       
+
+        snprintf(dir, PATH_MAX + 1,isChroot() ? SHAREDCFG_DIR"/%s" : DEFAULTDIR SHAREDCFG_DIR"/%s", group);
+        dp = opendir(dir);
+        if (!dp) {
+            merror("Invalid group: %.255s",group);                
+            return OS_INVALID;
+        }
+
+        group = strtok_r(NULL, delim, &save_ptr);
+        max_multigroups++;
+        closedir(dp);
+    }       
+   
+    return OS_SUCCESS;
+}
