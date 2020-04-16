@@ -901,6 +901,10 @@ long unsigned int WINAPI state_checker(__attribute__((unused)) void *_void) {
                     minfo(FIM_WHODATA_READDED, syscheck.dir[i]);
                     if (set_winsacl(syscheck.dir[i], i)) {
                         merror(FIM_ERROR_WHODATA_ADD_DIRECTORY, syscheck.dir[i]);
+                        syscheck.realtime_change = 1;
+                        d_status->status |= WD_CHECK_REALTIME;
+                        d_status->status &= ~WD_CHECK_WHODATA;
+                        syscheck.opts[i] &= ~WHODATA_ACTIVE;
                         continue;
                     }
                     d_status->status |= WD_STATUS_EXISTS;
