@@ -33,6 +33,7 @@ install:
 
 	$(INSTALL_DIR) $(PREFIX)/api/scripts
 	$(INSTALL_FILE) scripts/wazuh-apid.py ${PREFIX}/api/scripts
+	$(INSTALL_FILE) scripts/migration.py ${PREFIX}/api/scripts
 
 	$(INSTALL_DIR) $(PREFIX)/api/service
 	$(INSTALL_EXEC) service/wazuh-api $(PREFIX)/api/service
