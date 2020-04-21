@@ -13,7 +13,7 @@ INSTALL_RW_DIR = install -o root -g ${OSSEC_GROUP} -m 0770 -d
 INSTALL_EXEC   = install -o root -g ${OSSEC_GROUP} -m 0750
 INSTALL_FILE   = install -o root -g ${OSSEC_GROUP} -m 0640
 PYTHON_BIN     = $(PREFIX)/framework/python/bin/python3
-
+MAJOR 		   = 0
 
 .PHONY: all backup install service
 

@@ -34,8 +34,8 @@ backup_old_api() {
             cp -rLfp ${API_PATH}/configuration/ssl/* ${API_PATH_BACKUP}/configuration/ssl
         fi
 
-        # remove old API directory
-        rm -rf ${API_PATH}
+#        # remove old API directory
+#        rm -rf ${API_PATH}
 
     fi
 
