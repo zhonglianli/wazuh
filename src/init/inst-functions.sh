@@ -978,6 +978,10 @@ InstallLocal()
     ${MAKEBIN} --quiet -C ../framework install PREFIX=${PREFIX} USE_FRAMEWORK_LIB=${LIB_FLAG}
 
     ### Install API
+    if [ "X${update_only}" = "Xyes" ]; then
+        MAJOR=$(echo $USER_OLD_VERSION | cut -dv -f2 | cut -d. -f1)
+        ${MAKEBIN} --quiet -C ../api backup PREFIX=${PREFIX} MAJOR=${MAJOR}
+    fi
     ${MAKEBIN} --quiet -C ../api install PREFIX=${PREFIX}
 
     ### Install API service

@@ -15,14 +15,15 @@ INSTALL_FILE   = install -o root -g ${OSSEC_GROUP} -m 0640
 PYTHON_BIN     = $(PREFIX)/framework/python/bin/python3
 
 
-.PHONY: all install service
+.PHONY: all backup install service
 
-all: install service
+all: backup install service
 
-install:
+backup:
     # Backup previous configuration
 	. ../api/service/inst-api-functions.sh; backup_old_api
 
+install:
     # Copy files and create folders
 	$(INSTALL_DIR) $(PREFIX)/api
 	$(INSTALL_RW_DIR) $(PREFIX)/api/configuration
@@ -45,6 +46,6 @@ install:
     # Restore old API config
 	. ../api/service/inst-api-functions.sh; restore_old_api
 
-    # Install daemon
 service:
+    # Install daemon
 	WAZUH_PATH=$(PREFIX) $(PREFIX)/api/service/install_daemon.sh
