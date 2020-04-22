@@ -318,7 +318,7 @@ int realtime_start(void);
  * @param dir Path to file or directory
  * @param whodata If the path is configured with whodata option
  * @param followsl If the path is configured with follow sym link option
- * @return 0 on success, -1 on error
+ * @return 1 on success, -1 on realtime_start failure, -2 on set_winsacl failure, and 0 on other errors
  */
 int realtime_adddir(const char *dir, int whodata, int followsl) __attribute__((nonnull(1)));
 
@@ -517,6 +517,7 @@ extern pthread_mutex_t audit_mutex;
 extern pthread_cond_t audit_thread_started;
 extern pthread_cond_t audit_hc_started;
 extern pthread_cond_t audit_db_consistency;
+
 #elif WIN32
 /**
  * @brief Initializes the whodata scan mode
@@ -540,6 +541,11 @@ int whodata_audit_start();
  * @return 0 on success, 1 on error
  */
 int set_winsacl(const char *dir, int position);
+
+/**
+ * @brief In case SACLs and policies have been set, restore them
+ */
+void audit_restore();
 
 /**
  * @brief Thread that checks the status of the whodata configured folders
