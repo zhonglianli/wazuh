@@ -265,7 +265,9 @@ void LogCollectorStart()
             /* On Windows we need to forward the seek for wildcard files */
 #ifdef WIN32
             set_read(current, i, j);
-            minfo(READING_FILE, current->file);
+            if (current->file) {
+                minfo(READING_FILE, current->file);
+            }
 
             if (current->fp) {
                 current->read(current, &r, 1);
