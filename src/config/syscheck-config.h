@@ -189,6 +189,7 @@ typedef struct whodata {
     OSHash *fd;                         // Open file descriptors
     OSHash *directories;                // Directories checked by whodata mode
     int interval_scan;                  // Time interval between scans of the checking thread
+    int whodata_setup;                  // Worth 1 when there is some directory configured with whodata
     whodata_dir_status *dirs_status;    // Status list
     char **device;                       // Hard disk devices
     char **drive;                        // Drive letter
@@ -328,6 +329,15 @@ typedef struct _config {
     int process_priority; // Adjusts the priority of the process (or threads in Windows)
     bool allow_remote_prefilter_cmd;
 } syscheck_config;
+
+/**
+ * @brief Split a given string with all the directories delimited with selected char
+ *
+ * @param match Delimiter used to split
+ * @param str String with directories to split
+ * @param size Maximun number of directories to monitor in the same directories line.
+ */
+char **entries_split(char *match, const char *str, size_t size);
 
 /**
  * @brief Adds (or overwrite if exists) an entry to the syscheck configuration structure

@@ -12,6 +12,64 @@
 #include "syscheck-config.h"
 #include "config.h"
 
+/* Split string of directories given in config */
+char **entries_split(char *match, const char *str, size_t size)
+{
+
+    size_t i = 0;
+    const char *aux_entries;
+    aux_entries = str;
+    const char *token;
+    char **dir;
+
+    /* We can't do anything if str is null */
+    if (str == NULL) {
+        return (NULL);
+    }
+
+    dir = (char **)calloc(size + 1, sizeof(char *));
+
+    /* Dir can not be null */
+    if (dir == NULL) {
+        return (NULL);
+    }
+
+    /* Allocate memory to null */
+    while (i <= size) {
+        dir[i] = NULL;
+        i++;
+    }
+    i = 0;
+
+    /* Get each dir separately */
+    token = strtok(aux_entries, match);
+    while (token){
+        if (i < size){
+            mwarn("111111111111");
+            dir[i] = (char *)calloc(strlen(token), sizeof(char));
+            if (dir[i] == NULL) goto error;
+            strcpy(dir[i++], token);
+            token = strtok(NULL, match);
+        } else {
+            mwarn(FIM_WARN_MAX_DIR_REACH, size);
+            break;
+        }
+    }
+
+    return (dir);
+
+error:
+    i = 0;
+
+    while (dir[i]) {
+        free(dir[i++]);
+    }
+
+    free(dir);
+    return (NULL);
+
+}
+
 void dump_syscheck_entry(syscheck_config *syscheck, char *entry, int vals, int reg,
         const char *restrictfile, int recursion_limit, const char *tag, const char *link)
 {
@@ -240,9 +298,10 @@ int read_reg(syscheck_config *syscheck, char *entries, int arch, char *tag)
     int j;
     char **entry;
     char *tmp_str;
+    char *match = ",";
 
     /* Get each entry separately */
-    entry = OS_StrBreak(',', entries, MAX_DIR_SIZE); /* Max number */
+    entry = entries_split(match, entries, MAX_DIR_SIZE); /* Max number */
 
     if (entry == NULL) {
         return (0);
@@ -335,7 +394,8 @@ static int read_attr(syscheck_config *syscheck, const char *dirs, char **g_attrs
     char *clean_tag = NULL;
     char **dir;
     char *tmp_str;
-    dir = OS_StrBreak(',', dirs, MAX_DIR_SIZE); /* Max number */
+    char *match = ",";
+    dir = entries_split(match, dirs, MAX_DIR_SIZE); /* Max number */
     char **dir_org = dir;
 
     int i;
